@@ -14,7 +14,52 @@ con <-mongo(
 
 con$find(limit=5)
 
-# https://www.edc.dk/alle-boliger/dannemare/4983/klokkevangen-4/?sagsnr=49205149
+onelink <-  "https://www.edc.dk/alle-boliger/aabenraa/6200/klinkbjerg-5/?sagsnr=61104296"
+# start with one
+one.tpage <- read_html(onelink)
+ftag <- ".case-facts__fact-col:nth-child(1) .case-facts__two-col:nth-child(1) .info"
+ftag2 <- ".case-facts__fact-col:nth-child(1) .case-facts__two-col:nth-child(1) .value"
+ftag3 <- ".case-facts__fact-col:nth-child(2) .case-facts__two-col:nth-child(2) .value"
+sectag <- "div.case-facts__fact-col"
+#first.section <- html_children()
+num <- one.tpage %>% html_nodes(ftag2) %>% html_text()
+num2 <- one.tpage %>% html_nodes(ftag3) %>% html_text()
+num3 <- one.tpage %>% html_nodes(sectag) %>% html_text()
+secs <- one.tpage %>% html_nodes(sectag)
+mylist <- list()
+
+for (i in 1:length(secs)) {
+    key = secs[[i]] %>% html_nodes(".info") %>% html_text
+    #print(c("G: ",html_text(s)))
+    print(c(i," K ",key))
+ 
+}
+for (s in secs) {
+ print("FIRST ...") 
+  keys = s %>% html_nodes(".info")
+  vals = s %>% html_nodes(".value")
+  for (i in 1:length(keys)) {
+    text = html_text(keys[[i]])
+    val = html_text(vals[[i]])
+    print(c("GOT",i, " ",text," -> ",val))
+    mylist[[ text ]] <- val
+    
+  }
+}
+for (s in secs) {
+ print("FIRST ...") 
+  keys = s %>% html_nodes(".info")
+  vals = s %>% html_nodes(".value")
+  for (k in 1:length(keys)) {
+    text = html_text(keys[[i]])
+    val = html_text(vals[[i]])
+    print(c("GOT",text," -> ",val))
+  }
+}
+
+
+
+# then more
 alllinks <- read_lines("out2.txt")
 tstlinks <- alllinks[5:20]
 allpages <- list()
